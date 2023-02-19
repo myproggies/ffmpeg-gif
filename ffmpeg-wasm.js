@@ -9,7 +9,36 @@ var Module=typeof Module!="undefined"?Module:{};var moduleOverrides=Object.assig
 }*/
 
 
-fetch('https://raw.githubusercontent.com/myproggies/ffmpeg-gif/main/ffmpeg-wasm.js',{ mode: "cors" })
-    .then(result=>result.arrayBuffer()).then(buffer => {
-    console.log("Fetch Result", buffer);
-});
+
+
+
+
+  async function downloadWasm(url) {
+      const f = await fetch('https://raw.githubusercontent.com/myproggies/ffmpeg-gif/main/ffmpeg-wasm.js',{ mode: "cors" });
+      const buff = await f.arrayBuffer();
+      console.log("Fetch Result", buff);
+      return buff;
+  }
+  var wasm = downloadWasm('manual_wasm_instantiate.wasm');
+  // Module.instantiateWasm is a user-implemented callback which the Emscripten runtime calls to perform
+  // the WebAssembly instantiation action. The callback function will be called with two parameters, imports
+  // and successCallback. imports is a JS object which contains all the function imports that need to be passed
+  // to the Module when instantiating, and once instantiated, the function should call successCallback() with
+  // the WebAssembly Instance object.
+  // The instantiation can be performed either synchronously or asynchronously. The return value of this function
+  // should contain the exports object of the instantiated Module, or an empty dictionary object {} if the
+  // instantiation is performed asynchronously, or false if instantiation failed.
+  Module.instantiateWasm = function(imports, successCallback) {
+    console.log('instantiateWasm: instantiating asynchronously');
+    wasm.then(function(wasmBinary) {
+      console.log('wasm download finished, begin instantiating');
+      var wasmInstantiate = WebAssembly.instantiate(new Uint8Array(wasmBinary), imports).then(function(output) {
+        console.log('wasm instantiation succeeded');
+        Module.testWasmInstantiationSucceeded = 1;
+        successCallback(output.instance);
+      }).catch(function(e) {
+        console.log('wasm instantiation failed! ' + e);
+      });
+    });
+    return {}; // Compiling asynchronously, no exports.
+  }
