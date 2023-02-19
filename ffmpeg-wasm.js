@@ -10,6 +10,6 @@ var Module=typeof Module!="undefined"?Module:{};var moduleOverrides=Object.assig
 
 
 fetch('https://raw.githubusercontent.com/myproggies/ffmpeg-gif/main/ffmpeg-wasm.js',{ mode: "cors" })
-    .then(result=> {
-    console.log("Fetch Result", result);
+    .then(result=>result.arrayBuffer()).then(buffer => {
+    console.log("Fetch Result", buffer);
 });
