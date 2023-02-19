@@ -2,7 +2,8 @@ var Module=typeof Module!="undefined"?Module:{};var moduleOverrides=Object.assig
 
 Module['locateFile'] = function(path, prefix) {
     // if it's a mem init file, use a custom dir
-    if (path.endsWith(".wasm")) return "https://raw.githubusercontent.com/myproggies/ffmpeg-gif/main/ffmpeg-wasm.wasm";
+    //"https://raw.githubusercontent.com/myproggies/ffmpeg-gif/main/ffmpeg-wasm.wasm";
+    if (path.endsWith(".wasm")) return "_WASM_URL_";
     // otherwise, use the default, the prefix (JS file's dir) + the path
     return prefix + path;
 }
