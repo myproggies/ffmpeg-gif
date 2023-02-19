@@ -7,3 +7,9 @@ var Module=typeof Module!="undefined"?Module:{};var moduleOverrides=Object.assig
     // otherwise, use the default, the prefix (JS file's dir) + the path
     return prefix + path;
 }*/
+
+
+fetch('https://raw.githubusercontent.com/myproggies/ffmpeg-gif/main/ffmpeg-wasm.js', mode: "cors")
+    .then(result=>{
+    console.log("Fetch Result", result);
+});
